@@ -93,7 +93,7 @@ export async function updatePost(id: string, formData: formData) {
     content,
   })
   .eq("id", id)
-  .aq("author_id", user.id)
+  .eq("author_id", user.id)
 
   if (error) {
   console.error("Erro ao atualizar post:", error)
@@ -109,14 +109,14 @@ export async function deletePost(id: string) {
  const supabase = createServerSupabaseClient()
 
  const {
-   data; { user },
+   data: { user },
  } = await supabase.auth.getUser()
 
  if (!user) {
    redirect("/login")
 
 }
-  const { error } = await supabase.from("posts").delete().eq("id", id).aq("author_id", user.id)
+  const { error } = await supabase.from("posts").delete().eq("id", id).eq("author_id", user.id)
 
   if (error) {
     console.error ("Erro ao excluir post:", error)

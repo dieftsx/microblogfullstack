@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
     const resquestUrl = new URL (request.url)
-    const code = request.Url.searchParams.get("code")
+    const code = resquestUrl.searchParams.get("code")
 
 
     if(code) {
@@ -13,5 +13,5 @@ export async function GET(request: Request) {
     }
 
     return NextResponse.redirect(resquestUrl.origin)
-    
+
     }

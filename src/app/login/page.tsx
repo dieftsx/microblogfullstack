@@ -72,7 +72,7 @@ export default function Login() {
 
                 <div className="space-y-1">
                   <label
-                    htmlFor="email"
+                    htmlFor="password"
                     className="text-sm font-medium text-purple-700"
                   >
                     Senha

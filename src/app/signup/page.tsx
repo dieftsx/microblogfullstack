@@ -11,13 +11,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function Login() {
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false)
 
   async function handleSubmit(formData: FormData) {
     setError(null);
+    setSuccess(false)
     const result = await signIn(formData);
 
     if (!result.success) {
       setError(result.error);
+    } else {
+      setSuccess(true)
     }
   }
 
@@ -48,7 +52,7 @@ export default function Login() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              (success ? (
+            {success ? (
               <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded text-center">
                 <p className="font-medium mb-2">
                   Cadastro realizado com sucesso!
@@ -102,7 +106,7 @@ export default function Login() {
                     htmlFor="fullName"
                     className="text-sm font-medium text-purple-700"
                   >
-                  Nome completo
+                    Nome completo
                   </label>
                   <Input
                     id="fullName"
@@ -132,22 +136,18 @@ export default function Login() {
                   type="submit"
                   className="w-full bg-purple-700 hover:bg-purple-800"
                 >
-                Cadastrar
+                  Cadastrar
                 </Button>
-              </form>
-
+                </form>
+              )}
               <div className="mt-4 text-center text-sm">
                 <p className="text-purple-600">
                   Já tem conta?{" "}
-                  <Link
-                    href="/login"
-                    className="tet-purple800 hover:underline"
-                  >
+                  <Link href="/login" className="tet-purple800 hover:underline">
                     Entrar
-                    </Link>
-
-</p>
-</div>
+                  </Link>
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>

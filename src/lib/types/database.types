@@ -1,6 +1,4 @@
 
-
-
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Database {
@@ -93,9 +91,9 @@ export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 export type Category = Database["public"]["Tables"]["categories"]["Row"]
 
 // Atualizando o tipo para refletir a estrutura real dos dados retornados pelo Supabase
-export interface PostWithAuthor extends Omit<Post, 'author_id' | 'category_id'> {
-  author_id: string;
-  category_id: string | null;
-  author: Profile;
-  category: Category | null;
+export interface PostWithAuthor extends Omit<Post, "author_id" | "category_id"> {
+  author_id: string
+  category_id: string | null
+  author: Profile
+  category: Category | null
 }

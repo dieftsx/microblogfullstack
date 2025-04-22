@@ -16,7 +16,7 @@ export async function PostList() {
 
   return (
     <div className="space-y-6">
-      {posts.map((post) => (
+      {posts.map((post: any) => (
         <Post
           key={post.id}
           id={post.id}
@@ -27,7 +27,7 @@ export async function PostList() {
             month: "long",
             year: "numeric",
           })}
-          author={post.author.username}
+          author={post.author?.username || "Usuário desconhecido"}
           category={post.category}
         />
       ))}

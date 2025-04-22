@@ -4,7 +4,7 @@ import { Post } from "./post"
 export async function PostList() {
   const posts = await getPosts()
 
-  if (posts.length === 0) {
+  if (!posts || posts.length === 0) {
     return (
       <div className="text-center p-8 bg-white rounded-lg border border-purple-200 dark:bg-purple-900/50 dark:border-purple-800 dark:text-purple-300">
         <p className="text-purple-700 dark:text-purple-400">

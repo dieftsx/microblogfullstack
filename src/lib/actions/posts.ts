@@ -9,7 +9,8 @@ export async function getPosts() {
   const supabase = createServerSupabaseClient()
 
   try {
-    const { data: posts, error } = await supabase
+    // Consulta simplificada com melhor tratamento de erros
+    const { data, error } = await supabase
       .from("posts")
       .select(`
         *,
@@ -19,11 +20,11 @@ export async function getPosts() {
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("Erro ao buscar posts:", error)
+      console.error("Erro ao buscar posts:", error.message)
       return []
     }
 
-    return posts
+    return data || []
   } catch (error) {
     console.error("Erro ao buscar posts:", error)
     return []
@@ -34,7 +35,7 @@ export async function getPostsByCategory(categoryId: string) {
   const supabase = createServerSupabaseClient()
 
   try {
-    const { data: posts, error } = await supabase
+    const { data, error } = await supabase
       .from("posts")
       .select(`
         *,
@@ -45,11 +46,11 @@ export async function getPostsByCategory(categoryId: string) {
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("Erro ao buscar posts por categoria:", error)
+      console.error("Erro ao buscar posts por categoria:", error.message)
       return []
     }
 
-    return posts
+    return data || []
   } catch (error) {
     console.error("Erro ao buscar posts por categoria:", error)
     return []
@@ -67,7 +68,7 @@ export async function getPostsByCategorySlug(slug: string) {
       .single()
 
     if (categoryError || !category) {
-      console.error("Erro ao buscar categoria:", categoryError)
+      console.error("Erro ao buscar categoria:", categoryError?.message)
       return []
     }
 
@@ -93,7 +94,7 @@ export async function getPost(id: string) {
       .single()
 
     if (error) {
-      console.error("Erro ao buscar post:", error)
+      console.error("Erro ao buscar post:", error.message)
       return null
     }
 
@@ -131,7 +132,7 @@ export async function createPost(formData: FormData) {
     })
 
     if (error) {
-      console.error("Erro ao criar post:", error)
+      console.error("Erro ao criar post:", error.message)
       return { success: false, error: error.message }
     }
 
@@ -173,7 +174,7 @@ export async function updatePost(id: string, formData: FormData) {
       .eq("author_id", user.id)
 
     if (error) {
-      console.error("Erro ao atualizar post:", error)
+      console.error("Erro ao atualizar post:", error.message)
       return { success: false, error: error.message }
     }
 
@@ -201,7 +202,7 @@ export async function deletePost(id: string) {
     const { error } = await supabase.from("posts").delete().eq("id", id).eq("author_id", user.id)
 
     if (error) {
-      console.error("Erro ao excluir post:", error)
+      console.error("Erro ao excluir post:", error.message)
       return { success: false, error: error.message }
     }
 

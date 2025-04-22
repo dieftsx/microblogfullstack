@@ -4,7 +4,6 @@ import { createServerSupabaseClient } from "@/lib/supabase/server"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
-// Modifique a função signUp para garantir que o perfil seja criado corretamente
 export async function signUp(formData: FormData) {
   const supabase = createServerSupabaseClient()
 
@@ -34,20 +33,6 @@ export async function signUp(formData: FormData) {
 
   if (error) {
     return { success: false, error: error.message }
-  }
-
-  if (data.user) {
-    // Inserir o perfil do usuário
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: data.user.id,
-      username,
-      full_name: fullName,
-    })
-
-    if (profileError) {
-      console.error("Erro ao criar perfil:", profileError)
-      return { success: false, error: "Erro ao criar perfil de usuário." }
-    }
   }
 
   return { success: true }
@@ -82,15 +67,25 @@ export async function signOut() {
 export async function getCurrentUser() {
   const supabase = createServerSupabaseClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
 
-  if (!user) {
+    if (!user) {
+      return null
+    }
+
+    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
+
+    return { user, profile }
+  } catch (error) {
+    console.error("Erro ao obter usuário atual:", error)
     return null
   }
+}
 
-  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
-
-  return { user, profile }
+export async function isAdmin() {
+  const userData = await getCurrentUser()
+  return userData?.profile?.is_admin === true
 }

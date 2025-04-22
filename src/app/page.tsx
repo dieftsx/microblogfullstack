@@ -1,8 +1,6 @@
-import Link from "next/link"
-import { PenLine } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { PostList } from "@/app/components/post-list"
+import { NavBar } from "./components/nav-bar"
+import { PostList } from "./components/post-list"
 
 export default function Home() {
   return (
@@ -14,16 +12,7 @@ export default function Home() {
         </header>
 
         <div className="max-w-2xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="font-serif text-2xl text-purple-700">Meus Pensamentos</h2>
-            <Link href="/novo-post">
-              <Button className="bg-purple-700 hover:bg-purple-800">
-                <PenLine className="mr-2 h-4 w-4" />
-                Novo Pensamento
-              </Button>
-            </Link>
-          </div>
-
+          <NavBar />
           <PostList />
         </div>
       </div>

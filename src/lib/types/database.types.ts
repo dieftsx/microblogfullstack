@@ -1,3 +1,5 @@
+
+
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
 
 export interface Database {
@@ -9,6 +11,7 @@ export interface Database {
           title: string
           content: string
           author_id: string
+          category_id: string | null
           created_at: string
           updated_at: string
         }
@@ -17,6 +20,7 @@ export interface Database {
           title: string
           content: string
           author_id: string
+          category_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -25,6 +29,7 @@ export interface Database {
           title?: string
           content?: string
           author_id?: string
+          category_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -35,6 +40,7 @@ export interface Database {
           username: string
           full_name: string | null
           avatar_url: string | null
+          is_admin: boolean
           created_at: string
           updated_at: string
         }
@@ -43,6 +49,7 @@ export interface Database {
           username: string
           full_name?: string | null
           avatar_url?: string | null
+          is_admin?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -51,8 +58,29 @@ export interface Database {
           username?: string
           full_name?: string | null
           avatar_url?: string | null
+          is_admin?: boolean
           created_at?: string
           updated_at?: string
+        }
+      }
+      categories: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          created_at?: string
         }
       }
     }
@@ -61,5 +89,12 @@ export interface Database {
 
 export type Post = Database["public"]["Tables"]["posts"]["Row"]
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
-export type PostWithAuthor = Post & { author: Profile }
+export type Category = Database["public"]["Tables"]["categories"]["Row"]
 
+// Atualizando o tipo para refletir a estrutura real dos dados retornados pelo Supabase
+export interface PostWithAuthor extends Omit<Post, "author_id" | "category_id"> {
+  author_id: string
+  category_id: string | null
+  author: Profile
+  category: Category | null
+}

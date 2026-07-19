@@ -16,13 +16,13 @@ type ThemeProviderState = {
 }
 
 const initialState: ThemeProviderState = {
-  theme: "system",
+  theme: "dark",
   setTheme: () => null,
 }
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
 
-export function ThemeProvider({ children, defaultTheme = "system", ...props }: ThemeProviderProps) {
+export function ThemeProvider({ children, defaultTheme = "dark", ...props }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(defaultTheme)
 
   useEffect(() => {

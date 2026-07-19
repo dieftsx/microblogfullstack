@@ -6,7 +6,7 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function updateProfile(formData: FormData) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   const {
     data: { user },
@@ -21,7 +21,7 @@ export async function updateProfile(formData: FormData) {
   const avatarUrl = formData.get("avatarUrl") as string
 
   // Verificar se o nome de usuário já existe (exceto para o usuário atual)
-  const { data: existingUser, error: checkError } = await supabase
+  const { data: existingUser } = await supabase
     .from("profiles")
     .select("id")
     .eq("username", username)

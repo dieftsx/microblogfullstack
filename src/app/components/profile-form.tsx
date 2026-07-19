@@ -32,11 +32,11 @@ export function ProfileForm({ profile }: ProfileFormProps) {
       const result = await updateProfile(formData)
 
       if (!result.success) {
-        setError(result.error)
+        setError(result.error ?? null)
       } else {
         setSuccess(true)
       }
-    } catch (err) {
+    } catch {
       setError("Ocorreu um erro ao atualizar o perfil.")
     } finally {
       setIsSubmitting(false)

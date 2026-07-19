@@ -6,20 +6,21 @@ import { ArrowLeft } from "lucide-react"
 import { getPostsByCategorySlug } from "../../../lib/actions/posts"
 import { getCategoryBySlug } from "@/lib/actions/categories"
 import { Post } from "../../components/post"
-import { Layout } from "../../components/layout"
+import { PageLayout } from "@/components/page-layout"
 import { NavBar } from "../../components/nav-bar"
 
-export default async function CategoryPage({ params }: { params: { slug: string } }) {
-  const category = await getCategoryBySlug(params.slug)
+export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const category = await getCategoryBySlug(slug)
 
   if (!category) {
     notFound()
   }
 
-  const posts = await getPostsByCategorySlug(params.slug)
+  const posts = await getPostsByCategorySlug(slug)
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="max-w-2xl mx-auto">
         <Link
           href="/"
@@ -38,7 +39,7 @@ export default async function CategoryPage({ params }: { params: { slug: string 
             <p className="text-purple-700 dark:text-purple-400">Nenhum post encontrado nesta categoria.</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-10">
             {posts.map((post) => (
               <Post
                 key={post.id}
@@ -51,12 +52,13 @@ export default async function CategoryPage({ params }: { params: { slug: string 
                   year: "numeric",
                 })}
                 author={post.author.username}
+                authorUsername={post.author.username}
                 category={post.category}
               />
             ))}
           </div>
         )}
       </div>
-    </Layout>
+    </PageLayout>
   )
 }

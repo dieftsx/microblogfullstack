@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react"
 import { createPost } from "@/lib/actions/posts"
 import { getCurrentUser } from "@/lib/actions/auth"
 import { PostForm } from "../components/post-form"
-import { Layout } from "../components/layout"
+import { PageLayout } from "@/components/page-layout"
 export default async function NewPost() {
   const userData = await getCurrentUser()
 
@@ -15,7 +15,7 @@ export default async function NewPost() {
   }
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="max-w-2xl mx-auto">
         <Link
           href="/"
@@ -31,6 +31,6 @@ export default async function NewPost() {
           <PostForm action={createPost} submitLabel="Salvar Pensamento" />
         </div>
       </div>
-    </Layout>
+    </PageLayout>
   )
 }

@@ -4,12 +4,13 @@ import { ArrowLeft } from "lucide-react"
 
 import { getPost, updatePost } from "@/lib/actions/posts"
 import { getCurrentUser } from "@/lib/actions/auth"
-import { PostForm } from "@/components/post-form"
-import { Layout } from "@/components/layout"
+import { PostForm } from "@/app/components/post-form"
+import { PageLayout } from "@/components/page-layout"
 
-export default async function EditPostPage({ params }: { params: { id: string } }) {
+export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   try {
-    const post = await getPost(params.id)
+    const { id } = await params
+    const post = await getPost(id)
     const userData = await getCurrentUser()
 
     if (!post) {
@@ -21,7 +22,7 @@ export default async function EditPostPage({ params }: { params: { id: string } 
     }
 
     return (
-      <Layout>
+      <PageLayout>
         <div className="max-w-2xl mx-auto">
           <Link
             href={`/post/${post.id}`}
@@ -45,7 +46,7 @@ export default async function EditPostPage({ params }: { params: { id: string } 
             />
           </div>
         </div>
-      </Layout>
+      </PageLayout>
     )
   } catch (error) {
     console.error("Erro ao carregar página de edição:", error)

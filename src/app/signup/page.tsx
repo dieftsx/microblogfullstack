@@ -8,7 +8,6 @@ import { signUp } from "@/lib/actions/auth"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Layout } from "../components/layout"
 
 export default function SignUp() {
   const [error, setError] = useState<string | null>(null)
@@ -21,15 +20,15 @@ export default function SignUp() {
     const result = await signUp(formData)
 
     if (!result.success) {
-      setError(result.error)
+      setError(result.error ?? null)
     } else {
       setSuccess(true)
     }
   }
 
   return (
-    <Layout>
-      <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-purple-50 dark:bg-[#0f0a1a] flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
         <Link
           href="/"
           className="inline-flex items-center text-purple-700 hover:text-purple-900 mb-6 dark:text-purple-400 dark:hover:text-purple-300"
@@ -128,6 +127,6 @@ export default function SignUp() {
           </CardContent>
         </Card>
       </div>
-    </Layout>
+    </div>
   )
 }

@@ -3,7 +3,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { LogOut, User } from "lucide-react"
+import { LogOut, User, ExternalLink } from "lucide-react"
 import { signOut } from "@/lib/actions/auth"
 import type { Profile } from "../../lib/types/database.types"
 
@@ -48,9 +48,15 @@ export function UserMenu({ user }: UserMenuProps) {
           <p className="text-xs text-muted-foreground">@{user.username}</p>
         </div>
         <DropdownMenuItem asChild>
+          <Link href={`/user/${user.username}`} className="cursor-pointer">
+            <ExternalLink className="mr-2 h-4 w-4" />
+            <span>Ver Perfil</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
           <Link href="/profile" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
-            <span>Perfil</span>
+            <span>Editar Perfil</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem

@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function signUp(formData: FormData) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   const email = formData.get("email") as string
   const password = formData.get("password") as string
@@ -19,7 +19,7 @@ export async function signUp(formData: FormData) {
     return { success: false, error: "Este nome de usuário já está em uso." }
   }
 
-  const { data, error } = await supabase.auth.signUp({
+  const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -39,7 +39,7 @@ export async function signUp(formData: FormData) {
 }
 
 export async function signIn(formData: FormData) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   const email = formData.get("email") as string
   const password = formData.get("password") as string
@@ -58,14 +58,14 @@ export async function signIn(formData: FormData) {
 }
 
 export async function signOut() {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
   await supabase.auth.signOut()
   revalidatePath("/")
   redirect("/")
 }
 
 export async function getCurrentUser() {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const {
@@ -83,6 +83,19 @@ export async function getCurrentUser() {
     console.error("Erro ao obter usuário atual:", error)
     return null
   }
+}
+
+export async function getProfileByUsername(username: string) {
+  const supabase = await createServerSupabaseClient()
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username)
+    .single()
+
+  if (error) return null
+  return data
 }
 
 export async function isAdmin() {

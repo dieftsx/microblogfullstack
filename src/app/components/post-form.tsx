@@ -11,7 +11,7 @@ import { getCategories } from "@/lib/actions/categories"
 import type { Category } from "../../lib/types/database.types"
 
 interface PostFormProps {
-  action: (formData: FormData) => Promise<any>
+  action: (formData: FormData) => Promise<Record<string, unknown>>
   defaultValues?: {
     title?: string
     content?: string
@@ -34,8 +34,7 @@ export function PostForm({ action, defaultValues = {}, submitLabel }: PostFormPr
       try {
         const data = await getCategories()
         setCategories(data)
-      } catch (err) {
-        console.error("Erro ao carregar categorias:", err)
+      } catch {
       } finally {
         setIsLoading(false)
       }
@@ -56,10 +55,10 @@ export function PostForm({ action, defaultValues = {}, submitLabel }: PostFormPr
       const result = await action(formData)
 
       if (result && !result.success) {
-        setError(result.error)
+        setError(result.error as string)
         setIsSubmitting(false)
       }
-    } catch (err) {
+    } catch {
       setError("Ocorreu um erro ao salvar o post.")
       setIsSubmitting(false)
     }

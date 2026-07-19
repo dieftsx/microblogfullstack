@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 import { getCurrentUser } from "@/lib/actions/auth"
-import { Layout } from "../components/layout"
+import { PageLayout } from "@/components/page-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { ProfileForm } from "../components/profile-form"
@@ -21,14 +21,14 @@ export default async function ProfilePage() {
   const initials = profile?.full_name
     ? profile.full_name
         .split(" ")
-        .map((n) => n[0])
+        .map((n: string) => n[0])
         .join("")
         .toUpperCase()
         .substring(0, 2)
     : profile?.username.substring(0, 2).toUpperCase()
 
   return (
-    <Layout>
+    <PageLayout>
       <div className="max-w-2xl mx-auto">
         <Link
           href="/"
@@ -56,6 +56,6 @@ export default async function ProfilePage() {
           </CardContent>
         </Card>
       </div>
-    </Layout>
+    </PageLayout>
   )
 }

@@ -1,17 +1,20 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowLeft, CalendarDays, Edit, Tag, Trash, User } from 'lucide-react'
+import { ArrowLeft, CalendarDays, Tag, User } from 'lucide-react'
 
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { getPost, deletePost } from "@/lib/actions/posts"
+import { getPost } from "@/lib/actions/posts"
+import { getPostLikeInfo } from "@/lib/actions/likes"
 import { getCurrentUser } from "@/lib/actions/auth"
-import { Layout } from "../../components/layout"
+import { PageLayout } from "@/components/page-layout"
 import { PostActions } from "../../components/post-actions"
+import { LikeButton } from "../../components/like-button"
+import { CommentSection } from "../../components/comment-section"
 
-export default async function PostPage({ params }: { params: { id: string } }) {
+export default async function PostPage({ params }: { params: Promise<{ id: string }> }) {
   try {
-    const post = await getPost(params.id)
+    const { id } = await params
+    const post = await getPost(id)
     const userData = await getCurrentUser()
 
     if (!post) {
@@ -25,8 +28,10 @@ export default async function PostPage({ params }: { params: { id: string } }) {
       year: "numeric",
     })
 
+    const likeInfo = await getPostLikeInfo(post.id)
+
     return (
-      <Layout>
+      <PageLayout>
         <div className="max-w-2xl mx-auto">
           <Link
             href="/"
@@ -68,16 +73,30 @@ export default async function PostPage({ params }: { params: { id: string } }) {
                 </p>
               </div>
 
+              <div className="flex items-center gap-4 mt-6 pt-4 border-t border-purple-100 dark:border-purple-800">
+                <LikeButton
+                  postId={post.id}
+                  initialLiked={likeInfo.user_has_liked}
+                  initialCount={likeInfo.likes_count}
+                  currentUserId={userData?.user?.id || null}
+                />
+              </div>
+
               {isAuthor && <PostActions postId={post.id} />}
+
+              <CommentSection
+                postId={post.id}
+                currentUserId={userData?.user?.id || null}
+              />
             </CardContent>
           </Card>
         </div>
-      </Layout>
+      </PageLayout>
     )
   } catch (error) {
     console.error("Erro ao renderizar página do post:", error)
     return (
-      <Layout>
+      <PageLayout>
         <div className="max-w-2xl mx-auto">
           <Link
             href="/"
@@ -100,7 +119,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
             </CardContent>
           </Card>
         </div>
-      </Layout>
+      </PageLayout>
     )
   }
 }

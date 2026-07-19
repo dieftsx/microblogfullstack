@@ -6,10 +6,34 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 export async function getPosts() {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
-    // Consulta simplificada com melhor tratamento de erros
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) return []
+
+    const { data: sent } = await supabase
+      .from("friends")
+      .select("friend_id")
+      .eq("user_id", user.id)
+      .eq("status", "accepted")
+
+    const { data: received } = await supabase
+      .from("friends")
+      .select("user_id")
+      .eq("friend_id", user.id)
+      .eq("status", "accepted")
+
+    const friendIds = [...new Set([
+      ...(sent || []).map((f) => f.friend_id),
+      ...(received || []).map((f) => f.user_id),
+    ])]
+
+    const visibleIds = [user.id, ...friendIds]
+
     const { data, error } = await supabase
       .from("posts")
       .select(`
@@ -17,6 +41,7 @@ export async function getPosts() {
         author:profiles(*),
         category:categories(*)
       `)
+      .in("author_id", visibleIds)
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -32,9 +57,34 @@ export async function getPosts() {
 }
 
 export async function getPostsByCategory(categoryId: string) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) return []
+
+    const { data: sent } = await supabase
+      .from("friends")
+      .select("friend_id")
+      .eq("user_id", user.id)
+      .eq("status", "accepted")
+
+    const { data: received } = await supabase
+      .from("friends")
+      .select("user_id")
+      .eq("friend_id", user.id)
+      .eq("status", "accepted")
+
+    const friendIds = [...new Set([
+      ...(sent || []).map((f) => f.friend_id),
+      ...(received || []).map((f) => f.user_id),
+    ])]
+
+    const visibleIds = [user.id, ...friendIds]
+
     const { data, error } = await supabase
       .from("posts")
       .select(`
@@ -43,6 +93,7 @@ export async function getPostsByCategory(categoryId: string) {
         category:categories(*)
       `)
       .eq("category_id", categoryId)
+      .in("author_id", visibleIds)
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -58,7 +109,7 @@ export async function getPostsByCategory(categoryId: string) {
 }
 
 export async function getPostsByCategorySlug(slug: string) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const { data: category, error: categoryError } = await supabase
@@ -80,7 +131,7 @@ export async function getPostsByCategorySlug(slug: string) {
 }
 
 export async function getPost(id: string) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const { data, error } = await supabase
@@ -105,8 +156,34 @@ export async function getPost(id: string) {
   }
 }
 
+export async function getPostsByAuthor(authorId: string) {
+  const supabase = await createServerSupabaseClient()
+
+  try {
+    const { data, error } = await supabase
+      .from("posts")
+      .select(`
+        *,
+        author:profiles(*),
+        category:categories(*)
+      `)
+      .eq("author_id", authorId)
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      console.error("Erro ao buscar posts do autor:", error.message)
+      return []
+    }
+
+    return data || []
+  } catch (error) {
+    console.error("Erro ao buscar posts do autor:", error)
+    return []
+  }
+}
+
 export async function createPost(formData: FormData) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const {
@@ -145,7 +222,7 @@ export async function createPost(formData: FormData) {
 }
 
 export async function updatePost(id: string, formData: FormData) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const {
@@ -188,7 +265,7 @@ export async function updatePost(id: string, formData: FormData) {
 }
 
 export async function deletePost(id: string) {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const {

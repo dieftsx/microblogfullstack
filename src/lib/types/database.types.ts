@@ -40,6 +40,7 @@ export interface Database {
           username: string
           full_name: string | null
           avatar_url: string | null
+          bio: string | null
           is_admin: boolean
           created_at: string
           updated_at: string
@@ -49,6 +50,7 @@ export interface Database {
           username: string
           full_name?: string | null
           avatar_url?: string | null
+          bio?: string | null
           is_admin?: boolean
           created_at?: string
           updated_at?: string
@@ -58,6 +60,7 @@ export interface Database {
           username?: string
           full_name?: string | null
           avatar_url?: string | null
+          bio?: string | null
           is_admin?: boolean
           created_at?: string
           updated_at?: string
@@ -83,6 +86,72 @@ export interface Database {
           created_at?: string
         }
       }
+      friends: {
+        Row: {
+          id: string
+          user_id: string
+          friend_id: string
+          status: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          friend_id: string
+          status?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          friend_id?: string
+          status?: string
+          created_at?: string
+        }
+      }
+      likes: {
+        Row: {
+          id: string
+          user_id: string
+          post_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          post_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          post_id?: string
+          created_at?: string
+        }
+      }
+      comments: {
+        Row: {
+          id: string
+          user_id: string
+          post_id: string
+          content: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          post_id: string
+          content: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          post_id?: string
+          content?: string
+          created_at?: string
+        }
+      }
     }
   }
 }
@@ -90,11 +159,24 @@ export interface Database {
 export type Post = Database["public"]["Tables"]["posts"]["Row"]
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"]
 export type Category = Database["public"]["Tables"]["categories"]["Row"]
+export type Friend = Database["public"]["Tables"]["friends"]["Row"]
+export type Like = Database["public"]["Tables"]["likes"]["Row"]
+export type Comment = Database["public"]["Tables"]["comments"]["Row"]
 
-// Atualizando o tipo para refletir a estrutura real dos dados retornados pelo Supabase
 export interface PostWithAuthor extends Omit<Post, "author_id" | "category_id"> {
   author_id: string
   category_id: string | null
   author: Profile
   category: Category | null
+  likes_count?: number
+  comments_count?: number
+  user_has_liked?: boolean
+}
+
+export interface CommentWithAuthor extends Comment {
+  author: Profile
+}
+
+export interface FriendWithProfile extends Friend {
+  friend_profile: Profile
 }

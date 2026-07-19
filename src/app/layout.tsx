@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Playfair_Display } from "next/font/google"
 import "./globals.css"
+import { ThemeProvider } from "./components/theme-provider"
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -21,8 +22,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={playfair.variable}>{children}</body>
+    <html lang="pt-BR" className="dark" suppressHydrationWarning>
+      <body className={playfair.variable} suppressHydrationWarning>
+        <ThemeProvider defaultTheme="dark">
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

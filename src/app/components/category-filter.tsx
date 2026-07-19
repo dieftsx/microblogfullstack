@@ -24,8 +24,8 @@ export function CategoryFilter() {
       try {
         const data = await getCategories()
         setCategories(data)
-      } catch (err) {
-        console.error("Erro ao carregar categorias:", err)
+      } catch {
+        console.error("Erro ao carregar categorias:")
       } finally {
         setIsLoading(false)
       }
